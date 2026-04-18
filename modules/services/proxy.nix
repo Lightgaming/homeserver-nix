@@ -64,7 +64,6 @@
       "netbird.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        enableHSTS = false;
         http2 = true;
         extraConfig = ''
           # Required for long-lived gRPC/WebSocket connections.

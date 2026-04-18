@@ -52,7 +52,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3... your-public-key-here" # REPLACE THIS
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHK1vPSECfZl2tViKtMAh1FF9qWo6cHFxniNWZfo7FNA flotz@saint" # REPLACE THIS
     ];
   };
 

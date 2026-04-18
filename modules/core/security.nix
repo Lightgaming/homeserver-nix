@@ -10,8 +10,8 @@
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 53 ];
-    allowedUDPPorts = [ 53 ];
+    allowedTCPPorts = [ 22 53 80 443 ];
+    allowedUDPPorts = [ 53 3478 ];
     trustedInterfaces = [ "wt0" ];
   };
 

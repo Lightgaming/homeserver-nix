@@ -64,11 +64,15 @@
       "netbird.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
+        enableHSTS = false;
         http2 = true;
         extraConfig = ''
           # Required for long-lived gRPC/WebSocket connections.
           client_header_timeout 1d;
           client_body_timeout 1d;
+
+          # Clear previously cached HSTS policy for this host.
+          add_header Strict-Transport-Security "max-age=0" always;
 
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

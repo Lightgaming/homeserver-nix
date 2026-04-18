@@ -6,7 +6,7 @@
     settings = {
       # Harden SSH: Disable root login and require SSH keys (no passwords)
       PermitRootLogin = "no";
-      PasswordAuthentication = false;
+      PasswordAuthentication = true;
       KbdInteractiveAuthentication = false;
     };
   };

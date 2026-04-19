@@ -6,7 +6,7 @@
     maxretry = 4;
     findtime = "10m";
     bantime = "12h";
-    ignoreIP = [ "127.0.0.0/8" "100.100.124.164/10", "192.168.0.10" ]; 
+    ignoreIP = [ "127.0.0.0/8" "100.100.124.164/10" "192.168.0.10" ]; 
     jails = {
       sshd.settings = {
         enabled = true;

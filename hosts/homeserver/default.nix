@@ -14,6 +14,7 @@
     ../../modules/services/immich.nix
     ../../modules/services/vaultwarden.nix
     ../../modules/services/matrix.nix
+    ../../modules/services/matrix-admin.nix
   ];
 
   # --- Bootloader Configuration ---

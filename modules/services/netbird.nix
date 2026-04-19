@@ -12,38 +12,11 @@
     NB_STATE_DIR = "/var/lib/netbird-client";
   };
 
-  environment.etc."netbird/config.yaml".text = ''
-    # Combined NetBird Server Configuration (Simplified)
-    # Managed by NixOS.
-    server:
-      listenAddress: ":80"
-      exposedAddress: "https://netbird.lotz.zip:443"
-      stunPorts:
-        - 3478
-      metricsPort: 9090
-      healthcheckAddress: ":9000"
-      logLevel: "info"
-      logFile: "console"
-
-      # Keep this secret stable unless you intentionally rotate it.
-      authSecret: "prGGIu+AlVeD6gQY5L3QvBzlOyRnfo8u66nMfTb2x+c"
-      dataDir: "/var/lib/netbird"
-
-      auth:
-        issuer: "https://netbird.lotz.zip/oauth2"
-        signKeyRefreshEnabled: true
-        dashboardRedirectURIs:
-          - "https://netbird.lotz.zip/nb-auth"
-          - "https://netbird.lotz.zip/nb-silent-auth"
-        cliRedirectURIs:
-          - "http://localhost:53000/"
-          - "http://localhost:54000/"
-
-      store:
-        engine: "sqlite"
-        # Keep this key stable or you'll lose access to encrypted datastore content.
-        encryptionKey: "5h+mWDQK4pfTvzYaXImuCg8hF/87MF2x+3ORznE3M8k="
-  '';
+  # Keep NetBird server config (including auth/encryption keys) out of git and the Nix store.
+  environment.etc."netbird/config.yaml" = {
+    source = "/var/lib/secrets/netbird/config.yaml";
+    mode = "0400";
+  };
 
   # Run NetBird as a declarative NixOS-managed container service.
   virtualisation.docker.enable = true;
@@ -101,7 +74,7 @@
 
     netbird-dashboard = {
       image = "netbirdio/dashboard:latest";
-      ports = [ "8080:80/tcp" ];
+      ports = [ "127.0.0.1:8080:80/tcp" ];
       volumes = [
         # Optional dashboard overrides (env/js). Keep directory for future use.
         "/var/lib/netbird/dashboard:/app/data"

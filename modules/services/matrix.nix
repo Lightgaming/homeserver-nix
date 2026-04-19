@@ -3,14 +3,12 @@
 {
   services.matrix-synapse = {
     enable = true;
+    # Keep instance secrets out of the Nix store and git history.
+    extraConfigFiles = [ "/var/lib/secrets/matrix-synapse-secrets.yaml" ];
     settings = {
       server_name = "lotz.zip"; 
       public_baseurl = "https://matrix.lotz.zip";
       enable_registration = false;
-      
-      # Generates required keys automatically on first run
-      macaroon_secret_key = "CHANGE_ME_IN_PRODUCTION"; 
-      registration_shared_secret = "CHANGE_ME_IN_PRODUCTION";
 
       listeners = [{
         port = 8008;

@@ -3,9 +3,16 @@
 {
   services.fail2ban = {
     enable = true;
-    maxretry = 5;
-    bantime = "1h";
-    ignoreIP = [ "127.0.0.0/8" "100.64.0.0/10" ]; 
+    maxretry = 4;
+    findtime = "10m";
+    bantime = "12h";
+    ignoreIP = [ "127.0.0.0/8" "100.100.124.164/10", "192.168.0.10" ]; 
+    jails = {
+      sshd.settings = {
+        enabled = true;
+        mode = "aggressive";
+      };
+    };
   };
 
   networking.firewall = {
@@ -19,14 +26,26 @@
   # Automatic system upgrades
   system.autoUpgrade = {
     enable = true;
-    # Tell Nix to look for updates in your local flake directory
-    flake = "/home/hardclip/flake"; 
+    # Pull directly from your GitHub flake so config + packages update unattended.
+    flake = "github:Lightgaming/homeserver-nix#homeserver";
     flags = [
-      "--update-input"
-      "nixpkgs"
+      "--refresh"
       "-L" 
     ];
-    dates = "02:00";
+    dates = "daily";
     randomizedDelaySec = "45min";
+    operation = "switch";
+  };
+
+  # Keep the store healthy on long-running hosts.
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
+  nix.optimise = {
+    automatic = true;
+    dates = [ "weekly" ];
   };
 }

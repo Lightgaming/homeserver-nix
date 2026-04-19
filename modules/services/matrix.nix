@@ -8,7 +8,7 @@
     settings = {
       server_name = "lotz.zip"; 
       public_baseurl = "https://matrix.lotz.zip";
-      enable_registration = false;
+      enable_registration = true;
 
       listeners = [{
         port = 8008;

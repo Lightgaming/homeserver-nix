@@ -37,6 +37,9 @@
     randomEncryption.enable = true;
   } ];
 
+  # VScode Server
+  services.vscode-server.enable = true;
+
   # --- System Networking & Core ---
   networking.hostName = "homeserver";
   networking.networkmanager.enable = true;

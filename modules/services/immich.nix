@@ -13,7 +13,7 @@
     host = "0.0.0.0";
     openFirewall = false;
     # null exposes all devices to the Immich service.
-    accelerationDevices = null;
+    accelerationDevices = [ "/dev/dri/renderD128" ];
     # Immich sets up its own Postgres and Redis automatically in NixOS
   };
 }

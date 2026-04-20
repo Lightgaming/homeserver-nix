@@ -58,6 +58,9 @@
     ];
   };
 
+  # VS Code Server
+  programs.vscode-server.enable = true;
+
   programs.git.enable = true;
 
   system.stateVersion = "24.05";

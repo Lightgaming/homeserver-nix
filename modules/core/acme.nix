@@ -3,7 +3,7 @@
 {
   security.acme = {
     acceptTerms = true;
-    defaults.email = "florian@lotz.zip"; # REPLACE with your actual email
+    defaults.email = "florian@lotz.zip";
 
     certs."lotz.zip" = {
       domain = "*.lotz.zip";

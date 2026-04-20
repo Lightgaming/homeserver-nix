@@ -8,10 +8,8 @@
     settings = {
       server_name = "lotz.zip"; 
       public_baseurl = "https://matrix.lotz.zip";
-      enable_registration = true;
-      # Required by newer Synapse when open registrations are enabled.
-      # Disable both options again after creating your initial admin account.
-      enable_registration_without_verification = true;
+      enable_registration = false;
+      enable_registration_without_verification = false;
 
       listeners = [{
         port = 8008;

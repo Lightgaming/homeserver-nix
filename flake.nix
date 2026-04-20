@@ -13,6 +13,10 @@
         system = "x86_64-linux";
         modules = [
           ./hosts/homeserver/default.nix
+          vscode-server.nixosModules.default
+          ({ config, pkgs, ... }: {
+            services.vscode-server.enable = true;
+          })
         ];
       };
     };

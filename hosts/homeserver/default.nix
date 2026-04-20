@@ -53,7 +53,8 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHK1vPSECfZl2tViKtMAh1FF9qWo6cHFxniNWZfo7FNA flotz@saint" # REPLACE THIS
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHK1vPSECfZl2tViKtMAh1FF9qWo6cHFxniNWZfo7FNA flotz@saint"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOHnyd8p+T+OiC4Hj+1pCJFqfO3KkgMVxBHPwF9dP++v saint@DESKTOP-U5QUN5R"
     ];
   };
 

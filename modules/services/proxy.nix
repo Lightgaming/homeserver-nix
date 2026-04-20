@@ -12,29 +12,41 @@
       "vault.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:8222";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8222";
+        };
       };
       
       "immich.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:2283";
-        locations."/".extraConfig = ''
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          client_max_body_size 50000M;
-          proxy_read_timeout 600s;
-        '';
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:2283";
+          proxyWebsockets = true;
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            client_max_body_size 50000M;
+            proxy_read_timeout 600s;
+          '';
+        };
       };
 
       "matrix.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:8008";
-        locations."/_matrix".proxyPass = "http://127.0.0.1:8008";
-        locations."/_synapse/client".proxyPass = "http://127.0.0.1:8008";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
+        locations."/_matrix" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
+        locations."/_synapse/client" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
       };
 
       "chat.lotz.zip" = {
@@ -58,13 +70,17 @@
       "admin-matrix.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:8082";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8082";
+        };
       };
 
       "dns.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:3000";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:3000";
+        };
       };
 
       "netbird.lotz.zip" = {

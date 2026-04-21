@@ -15,6 +15,7 @@
     ../../modules/services/vaultwarden.nix
     ../../modules/services/matrix.nix
     ../../modules/services/matrix-admin.nix
+    ../../modules/services/rustdesk.nix
   ];
 
   # --- Bootloader Configuration ---

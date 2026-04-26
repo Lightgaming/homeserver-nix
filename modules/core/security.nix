@@ -18,7 +18,13 @@
   networking.firewall = {
     enable = true;
     # Keep only explicitly required internet-facing ports.
-    allowedTCPPorts = [ 22 53 80 443 ];
+    allowedTCPPorts = [ 
+      22 
+      53 
+      80 
+      443
+      8384  
+    ];
     allowedUDPPorts = [ 53 3478 ];
     trustedInterfaces = [ "wt0" ];
   };

@@ -15,6 +15,7 @@
     ../../modules/services/vaultwarden.nix
     ../../modules/services/matrix.nix
     ../../modules/services/matrix-admin.nix
+    ../../modules/services/rustdesk.nix
   ];
 
   # --- Bootloader Configuration ---
@@ -36,6 +37,12 @@
     device = "/dev/disk/by-partuuid/d4988e4b-8db3-4b93-9e08-7fe04995dbc0";
     randomEncryption.enable = true;
   } ];
+
+  # VScode Server
+  services.vscode-server = {
+    enable = true;
+    enableFHS = true;
+  };
 
   # --- System Networking & Core ---
   networking.hostName = "homeserver";

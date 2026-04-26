@@ -4,6 +4,7 @@
     enable = true;
     openDefaultPorts = true;
     # Optional: GUI credentials (can be set in the browser instead)
+    guiAddress = "0.0.0.0:8384";
     settings.gui = {
       user = "root";
       password = "root";

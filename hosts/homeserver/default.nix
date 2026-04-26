@@ -23,9 +23,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.enable = lib.mkForce false;
 
-  # --- Flakes Configuration ---
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   # --- ZFS Configuration ---
   # ZFS requires a hostId to track pool imports
   networking.hostId = "81872454";

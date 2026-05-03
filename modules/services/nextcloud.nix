@@ -15,5 +15,8 @@
   };
 
   # Reuse wildcard cert managed in modules/core/acme.nix.
-  services.nginx.virtualHosts."nextcloud.lotz.zip".useACMEHost = "lotz.zip";
+  services.nginx.virtualHosts."nextcloud.lotz.zip" = {
+    serverName = "nextcloud.lotz.zip";
+    useACMEHost = "lotz.zip";
+  };
 }

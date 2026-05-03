@@ -37,52 +37,59 @@
         };
       };
 
-      # "matrix.lotz.zip" = {
-      #   useACMEHost = "lotz.zip";
-      #   forceSSL = true;
-      #   locations."/" = {
-      #     proxyPass = "http://127.0.0.1:8008";
-      #   };
-      #   locations."/_matrix" = {
-      #     proxyPass = "http://127.0.0.1:8008";
-      #   };
-      #   locations."/_synapse/client" = {
-      #     proxyPass = "http://127.0.0.1:8008";
-      #   };
-      # };
+      "matrix.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
+        locations."/_matrix" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
+        locations."/_synapse/client" = {
+          proxyPass = "http://127.0.0.1:8008";
+        };
+      };
 
-      # "chat.lotz.zip" = {
-      #   useACMEHost = "lotz.zip";
-      #   forceSSL = true;
-      #   # We configure Element by overriding the static package here
-      #   root = pkgs.element-web.override {
-      #     conf = {
-      #       default_server_config = {
-      #         "m.homeserver" = {
-      #           base_url = "https://matrix.lotz.zip";
-      #           server_name = "lotz.zip";
-      #         };
-      #       };
-      #       disable_custom_urls = true;
-      #       disable_guests = true;
-      #     };
-      #   };
-      # };
+      "chat.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        # We configure Element by overriding the static package here
+        root = pkgs.element-web.override {
+          conf = {
+            default_server_config = {
+              "m.homeserver" = {
+                base_url = "https://matrix.lotz.zip";
+                server_name = "lotz.zip";
+              };
+            };
+            disable_custom_urls = true;
+            disable_guests = true;
+          };
+        };
+      };
 
-      # "admin-matrix.lotz.zip" = {
-      #   useACMEHost = "lotz.zip";
-      #   forceSSL = true;
-      #   locations."/" = {
-      #     proxyPass = "http://127.0.0.1:8082";
-      #   };
-      # };
+      "admin-matrix.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8082";
+        };
+      };
 
       "nextcloud.lotz.zip" = {
         serverName = "nextcloud.lotz.zip";
         useACMEHost = "lotz.zip";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1";
+          proxyPass = "http://127.0.0.1:8999";
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+          '';
         };
       };
 

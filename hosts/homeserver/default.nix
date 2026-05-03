@@ -13,6 +13,7 @@
     ../../modules/services/adguard.nix
     ../../modules/services/immich.nix
     ../../modules/services/vaultwarden.nix
+    ../../modules/services/nextcloud.nix
     ../../modules/services/matrix.nix
     ../../modules/services/matrix-admin.nix
     ../../modules/services/rustdesk.nix

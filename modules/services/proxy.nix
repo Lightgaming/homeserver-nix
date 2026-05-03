@@ -134,13 +134,6 @@
           proxyPass = "http://127.0.0.1:8384";
         };
       };
-      "nextcloud.lotz.zip" = {
-        useACMEHost = "lotz.zip";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:80";
-        };
-      };
     };
   };
 }

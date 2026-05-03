@@ -6,5 +6,12 @@
     config.dbtype = "sqlite";
     hostName = "nextcloud.lotz.zip";
     https = true;
+    settings = {
+      overwriteprotocol = "https";
+      trusted_proxies = [ "127.0.0.1" "::1" "100.64.0.0/10" ];
+    };
   };
+
+  # Reuse wildcard cert managed in modules/core/acme.nix.
+  services.nginx.virtualHosts."nextcloud.lotz.zip".useACMEHost = "lotz.zip";
 }

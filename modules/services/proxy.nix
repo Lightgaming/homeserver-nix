@@ -77,6 +77,15 @@
       #   };
       # };
 
+      "nextcloud.lotz.zip" = {
+        serverName = "nextcloud.lotz.zip";
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1";
+        };
+      };
+
       "dns.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;

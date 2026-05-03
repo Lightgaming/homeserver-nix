@@ -51,23 +51,23 @@
         };
       };
 
-      "chat.lotz.zip" = {
-        useACMEHost = "lotz.zip";
-        forceSSL = true;
-        # We configure Element by overriding the static package here
-        root = pkgs.element-web.override {
-          conf = {
-            default_server_config = {
-              "m.homeserver" = {
-                base_url = "https://matrix.lotz.zip";
-                server_name = "lotz.zip";
-              };
-            };
-            disable_custom_urls = true;
-            disable_guests = true;
-          };
-        };
-      };
+      # "chat.lotz.zip" = {
+      #   useACMEHost = "lotz.zip";
+      #   forceSSL = true;
+      #   # We configure Element by overriding the static package here
+      #   root = pkgs.element-web.override {
+      #     conf = {
+      #       default_server_config = {
+      #         "m.homeserver" = {
+      #           base_url = "https://matrix.lotz.zip";
+      #           server_name = "lotz.zip";
+      #         };
+      #       };
+      #       disable_custom_urls = true;
+      #       disable_guests = true;
+      #     };
+      #   };
+      # };
 
       "admin-matrix.lotz.zip" = {
         useACMEHost = "lotz.zip";
@@ -133,6 +133,11 @@
         locations."/" = {
           proxyPass = "http://127.0.0.1:8384";
         };
+      };
+      "nextcloud.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+
       };
     };
   };

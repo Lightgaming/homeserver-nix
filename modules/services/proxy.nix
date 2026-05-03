@@ -37,19 +37,19 @@
         };
       };
 
-      "matrix.lotz.zip" = {
-        useACMEHost = "lotz.zip";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8008";
-        };
-        locations."/_matrix" = {
-          proxyPass = "http://127.0.0.1:8008";
-        };
-        locations."/_synapse/client" = {
-          proxyPass = "http://127.0.0.1:8008";
-        };
-      };
+      # "matrix.lotz.zip" = {
+      #   useACMEHost = "lotz.zip";
+      #   forceSSL = true;
+      #   locations."/" = {
+      #     proxyPass = "http://127.0.0.1:8008";
+      #   };
+      #   locations."/_matrix" = {
+      #     proxyPass = "http://127.0.0.1:8008";
+      #   };
+      #   locations."/_synapse/client" = {
+      #     proxyPass = "http://127.0.0.1:8008";
+      #   };
+      # };
 
       # "chat.lotz.zip" = {
       #   useACMEHost = "lotz.zip";

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports = [
@@ -73,6 +73,10 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOHnyd8p+T+OiC4Hj+1pCJFqfO3KkgMVxBHPwF9dP++v saint@DESKTOP-U5QUN5R"
     ];
   };
+
+  environment.systemPackages = with pkgs; [
+    inputs.compose2nix.packages.x86_64-linux.default
+  ];
 
   programs.git.enable = true;
 

@@ -47,9 +47,6 @@
     enable = true;
   };
 
-  # Optional: Add your user to the "docker" group to run docker without sudo
-  users.users.hardclip.extraGroups = [ "docker" ];
-
   # VScode Server
   services.vscode-server = {
     enable = true;
@@ -70,7 +67,7 @@
   # --- User Configuration ---
   users.users.hardclip = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager", "docker" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHK1vPSECfZl2tViKtMAh1FF9qWo6cHFxniNWZfo7FNA flotz@saint"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOHnyd8p+T+OiC4Hj+1pCJFqfO3KkgMVxBHPwF9dP++v saint@DESKTOP-U5QUN5R"

@@ -42,6 +42,14 @@
     randomEncryption.enable = true;
   } ];
 
+  # --- Docker ---
+  virtualisation.docker = {
+    enable = true;
+  };
+
+  # Optional: Add your user to the "docker" group to run docker without sudo
+  users.users.hardclip.extraGroups = [ "docker" ];
+
   # VScode Server
   services.vscode-server = {
     enable = true;

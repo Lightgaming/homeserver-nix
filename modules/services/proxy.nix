@@ -82,6 +82,11 @@
         forceSSL = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:8384";
+          proxyWebsockets = true; # Critical for Syncthing's UI
+          extraConfig = ''
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+          '';
         };
       };
 

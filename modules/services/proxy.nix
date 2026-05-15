@@ -77,21 +77,13 @@
         };
       };
 
-      # "nextcloud.lotz.zip" = {
-      #   serverName = "nextcloud.lotz.zip";
-      #   useACMEHost = "lotz.zip";
-      #   forceSSL = true;
-      #   locations."/" = {
-      #     proxyPass = "http://127.0.0.1:8999";
-      #     recommendedProxySettings = true;
-      #     extraConfig = ''
-      #       proxy_set_header Host $host;
-      #       proxy_set_header X-Real-IP $remote_addr;
-      #       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      #       proxy_set_header X-Forwarded-Proto $scheme;
-      #     '';
-      #   };
-      # };
+      "syncthing.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8384";
+        };
+      };
 
       "dns.lotz.zip" = {
         useACMEHost = "lotz.zip";

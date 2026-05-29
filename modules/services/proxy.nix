@@ -103,7 +103,7 @@
         useACMEHost = "lotz.zip";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
+          proxyPass = "http://127.0.0.1:19080";
         };
       };
       # add insights.lotz.zip for http://127.0.0.1:8081
@@ -111,7 +111,7 @@
         useACMEHost = "lotz.zip";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8081";
+          proxyPass = "http://127.0.0.1:19081";
         };
       };
       # add web.lotz.zip for http://127.0.0.1:8082
@@ -119,7 +119,7 @@
         useACMEHost = "lotz.zip";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8082";
+          proxyPass = "http://127.0.0.1:19082";
         };
       };
 

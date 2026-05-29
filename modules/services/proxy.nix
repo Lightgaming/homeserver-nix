@@ -98,6 +98,31 @@
         };
       };
 
+      # add api.lotz.zip for http://127.0.0.1:8080
+      "api.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8080";
+        };
+      };
+      # add insights.lotz.zip for http://127.0.0.1:8081
+      "insights.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8081";
+        };
+      };
+      # add web.lotz.zip for http://127.0.0.1:8082
+      "web.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8082";
+        };
+      };
+
       "netbird.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;

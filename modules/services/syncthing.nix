@@ -5,9 +5,9 @@
     user = "hardclip";
     dataDir = "/home/hardclip/syncthing"; # Where your synced files live
     configDir = "/home/hardclip/.config/syncthing"; # Where settings live
-    guiAddress = "0.0.0.0:8384"; 
+    guiAddress = "127.0.0.1:8384";
     settings.gui = {
-      insecureSkipHostcheck = true; 
+      insecureSkipHostcheck = true;
     };
   };
 }

@@ -23,7 +23,6 @@
       53 
       80 
       443
-      8384
     ];
     allowedUDPPorts = [ 53 3478 ];
     trustedInterfaces = [ "wt0" ];

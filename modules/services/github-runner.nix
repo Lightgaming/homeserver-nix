@@ -5,6 +5,6 @@
     url = "https://github.com/Lightgaming/ravr";
     tokenFile = "/run/secrets/github-runner-token";
     user = "hardclip";
-    extraPackages = pkgs: [ pkgs.git pkgs.openssh pkgs.docker-client pkgs.docker-compose ];
+    extraPackages = [ pkgs.git pkgs.openssh pkgs.docker-client pkgs.docker-compose ];
   };
 }

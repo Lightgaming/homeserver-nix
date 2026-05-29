@@ -17,6 +17,7 @@
     ../../modules/services/matrix.nix
     ../../modules/services/matrix-admin.nix
     ../../modules/services/rustdesk.nix
+    ../../modules/services/github-runner.nix
   ];
 
   # --- Bootloader Configuration ---

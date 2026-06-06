@@ -56,7 +56,7 @@ in
     qbittorrent = {
       image = "lscr.io/linuxserver/qbittorrent:latest";
       environment = lsioEnv // {
-        WEBUI_PORT = "8080";
+        WEBUI_PORT = "18080";
       };
       volumes = [
         "${configRoot}/qbittorrent:/config"
@@ -198,7 +198,7 @@ in
       useACMEHost = "lotz.zip";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:8080";
+        proxyPass = "http://127.0.0.1:18080";
         proxyWebsockets = true;
       };
     };

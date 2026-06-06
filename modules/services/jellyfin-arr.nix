@@ -112,16 +112,6 @@ in
       extraOptions = [ "--network=host" ];
     };
 
-    readarr = {
-      image = "lscr.io/linuxserver/readarr:latest";
-      environment = lsioEnv;
-      volumes = [
-        "${configRoot}/readarr:/config"
-        "${mediaRoot}:/data"
-      ];
-      extraOptions = [ "--network=host" ];
-    };
-
     bazarr = {
       image = "lscr.io/linuxserver/bazarr:latest";
       environment = lsioEnv;
@@ -196,12 +186,6 @@ in
       useACMEHost = "lotz.zip";
       forceSSL = true;
       locations."/".proxyPass = "http://127.0.0.1:8686";
-    };
-
-    "readarr.lotz.zip" = {
-      useACMEHost = "lotz.zip";
-      forceSSL = true;
-      locations."/".proxyPass = "http://127.0.0.1:8787";
     };
 
     "bazarr.lotz.zip" = {

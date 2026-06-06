@@ -1,76 +1,58 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 let
   timezone = if config.time.timeZone != null then config.time.timeZone else "UTC";
-  minecraftData = "/data/minecraft";
+  minecraftRoot = "/data/minecraft";
+  craftyRoot = "${minecraftRoot}/crafty";
 in
 {
-  # Keep the Minecraft + VoxelDash stack declarative under NixOS.
+  # Crafty is a full Minecraft panel and can create/start/stop servers directly.
   virtualisation.docker.enable = true;
   virtualisation.oci-containers.backend = "docker";
 
   systemd.tmpfiles.rules = [
-    "d ${minecraftData} 0775 hardclip hardclip -"
-    "d ${minecraftData}/plugins 0775 hardclip hardclip -"
+    "d ${minecraftRoot} 0775 hardclip hardclip -"
+    "d ${craftyRoot} 0775 hardclip hardclip -"
+    "d ${craftyRoot}/backups 0775 hardclip hardclip -"
+    "d ${craftyRoot}/logs 0775 hardclip hardclip -"
+    "d ${craftyRoot}/servers 0775 hardclip hardclip -"
+    "d ${craftyRoot}/config 0775 hardclip hardclip -"
+    "d ${craftyRoot}/import 0775 hardclip hardclip -"
   ];
 
-  # Java Edition default server port.
-  networking.firewall.allowedTCPPorts = [ 25565 ];
+  # Crafty allocates server ports from this range by default.
+  networking.firewall.allowedTCPPortRanges = [
+    {
+      from = 25500;
+      to = 25600;
+    }
+  ];
+  networking.firewall.allowedUDPPortRanges = [
+    {
+      from = 25500;
+      to = 25600;
+    }
+  ];
+  networking.firewall.allowedUDPPorts = [ 19132 ];
 
-  # Install the latest VoxelDash plugin from GitHub releases before Minecraft starts.
-  systemd.services.voxeldash-plugin = {
-    description = "Download latest VoxelDash plugin";
-    before = [ "docker-minecraft.service" ];
-    path = with pkgs; [
-      coreutils
-      curl
-      gnugrep
-    ];
-    script = ''
-      set -eu
-
-      plugin_dir="${minecraftData}/plugins"
-      plugin_path="$plugin_dir/VoxelDash.jar"
-
-      mkdir -p "$plugin_dir"
-
-      release_url="$(curl -fsSL https://api.github.com/repos/gnmyt/VoxelDash/releases/latest | grep -oE 'https://[^\"]+\.jar' | head -n1 || true)"
-      if [ -z "$release_url" ]; then
-        echo "Could not resolve latest VoxelDash release jar URL" >&2
-        exit 1
-      fi
-
-      tmp_jar="$(mktemp /tmp/voxeldash.XXXXXX.jar)"
-      trap 'rm -f "$tmp_jar"' EXIT
-
-      curl -fsSL "$release_url" -o "$tmp_jar"
-      install -m 0644 "$tmp_jar" "$plugin_path"
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-    };
-  };
-
-  virtualisation.oci-containers.containers.minecraft = {
-    image = "itzg/minecraft-server:java25";
+  virtualisation.oci-containers.containers.minecraft-dashboard = {
+    image = "registry.gitlab.com/crafty-controller/crafty-4:latest";
     ports = [
-      "25565:25565/tcp"
-      "127.0.0.1:7867:7867/tcp"
+      "127.0.0.1:8443:8443/tcp"
+      "8123:8123/tcp"
+      "19132:19132/udp"
+      "25500-25600:25500-25600/tcp"
+      "25500-25600:25500-25600/udp"
     ];
     volumes = [
-      "${minecraftData}:/data"
+      "${craftyRoot}/backups:/crafty/backups"
+      "${craftyRoot}/logs:/crafty/logs"
+      "${craftyRoot}/servers:/crafty/servers"
+      "${craftyRoot}/config:/crafty/app/config"
+      "${craftyRoot}/import:/crafty/import"
     ];
     environment = {
-      EULA = "TRUE";
-      TYPE = "PAPER";
-      VERSION = "LATEST";
       TZ = timezone;
-      MEMORY = "6G";
     };
-  };
-
-  systemd.services.docker-minecraft = {
-    requires = [ "voxeldash-plugin.service" ];
-    after = [ "voxeldash-plugin.service" ];
   };
 }

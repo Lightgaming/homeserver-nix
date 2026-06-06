@@ -90,21 +90,15 @@
         };
       };
 
-      "voxeldash.lotz.zip" = {
+      "minecraft.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;
         locations."/" = {
           proxyPass = "https://127.0.0.1:8443";
           proxyWebsockets = true;
           extraConfig = ''
-            proxy_http_version 1.1;
             proxy_ssl_server_name on;
             proxy_ssl_verify off;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $http_connection;
-            proxy_set_header X-Forwarded-Proto https;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header Host $http_host;
             proxy_read_timeout 3600s;
             proxy_send_timeout 3600s;
           '';

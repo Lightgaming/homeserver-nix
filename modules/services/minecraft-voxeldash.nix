@@ -52,7 +52,7 @@ in
   };
 
   virtualisation.oci-containers.containers.minecraft = {
-    image = "itzg/minecraft-server:java21";
+    image = "itzg/minecraft-server:java25";
     ports = [
       "25565:25565/tcp"
       "127.0.0.1:7867:7867/tcp"

@@ -113,7 +113,7 @@ in
     };
 
     readarr = {
-      image = "lscr.io/linuxserver/readarr:develop";
+      image = "lscr.io/linuxserver/readarr:latest";
       environment = lsioEnv;
       volumes = [
         "${configRoot}/readarr:/config"

@@ -18,6 +18,7 @@
     ../../modules/services/matrix-admin.nix
     ../../modules/services/rustdesk.nix
     ../../modules/services/github-runner.nix
+    ../../modules/services/jellyfin-arr.nix
   ];
 
   # --- Bootloader Configuration ---

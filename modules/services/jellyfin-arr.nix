@@ -1,9 +1,12 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   mediaRoot = "/data";
   configRoot = "${mediaRoot}/config";
   timezone = if config.time.timeZone != null then config.time.timeZone else "UTC";
+  qbitWebUiUser = "admin";
+  qbitWebUiPassword = "MediaStack123!";
+  qbitWebUiPasswordHash = "100000:aqu7rlfM4/2J055EkRIFsw==:yNshKbv0AhSHNByWGFhKFXUWVGXNSFP2oqx4XfGv0EAI6XSkZ3iuF4+FLvZOE7hfbhLq2/JOu1byrN2Yg9X5FA==";
 
   lsioEnv = {
     PUID = "1000";
@@ -29,7 +32,6 @@ in
     "d ${mediaRoot}/config/radarr 0775 hardclip hardclip -"
     "d ${mediaRoot}/config/sonarr 0775 hardclip hardclip -"
     "d ${mediaRoot}/config/lidarr 0775 hardclip hardclip -"
-    "d ${mediaRoot}/config/readarr 0775 hardclip hardclip -"
     "d ${mediaRoot}/config/bazarr 0775 hardclip hardclip -"
     "d ${mediaRoot}/config/flaresolverr 0775 hardclip hardclip -"
 
@@ -51,6 +53,229 @@ in
   # qBittorrent peer traffic.
   networking.firewall.allowedTCPPorts = [ 6881 ];
   networking.firewall.allowedUDPPorts = [ 6881 ];
+
+  # Keep qB paths/categories/auth stable so ARR can import consistently.
+  systemd.services.qbittorrent-bootstrap = {
+    description = "Bootstrap qBittorrent settings";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "docker-qbittorrent.service" ];
+    script = ''
+      set -eu
+
+      qbit_dir="${configRoot}/qbittorrent/qBittorrent"
+      qbit_conf="$qbit_dir/qBittorrent.conf"
+
+      mkdir -p "$qbit_dir"
+
+      if [ ! -f "$qbit_conf" ]; then
+        cat > "$qbit_conf" <<'EOF'
+[AutoRun]
+enabled=false
+program=
+
+[Preferences]
+WebUI\Address=*
+WebUI\Port=18080
+WebUI\ServerDomains=*
+EOF
+      fi
+
+      set_kv() {
+        key="$1"
+        value="$2"
+        if grep -q "^$key=" "$qbit_conf"; then
+          sed -i "s|^$key=.*|$key=$value|" "$qbit_conf"
+        else
+          printf '%s=%s\n' "$key" "$value" >> "$qbit_conf"
+        fi
+      }
+
+      set_kv 'Session\DefaultSavePath' '/data/torrents/complete/'
+      set_kv 'Session\TempPath' '/data/torrents/incomplete/'
+      set_kv 'Downloads\SavePath' '/data/torrents/complete/'
+      set_kv 'Downloads\TempPath' '/data/torrents/incomplete/'
+      set_kv 'Downloads\TempPathEnabled' 'true'
+      set_kv 'WebUI\Address' '*'
+      set_kv 'WebUI\Port' '18080'
+      set_kv 'WebUI\ServerDomains' '*'
+      set_kv 'WebUI\Username' '${qbitWebUiUser}'
+      set_kv 'WebUI\Password_PBKDF2' '@ByteArray(${qbitWebUiPasswordHash})'
+
+      cat > "$qbit_dir/categories.json" <<'EOF'
+{
+  "movies": { "savePath": "/data/torrents/complete/movies" },
+  "tv": { "savePath": "/data/torrents/complete/tv" },
+  "music": { "savePath": "/data/torrents/complete/music" }
+}
+EOF
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+    };
+  };
+
+  systemd.services.docker-qbittorrent = {
+    requires = [ "qbittorrent-bootstrap.service" ];
+    after = [ "qbittorrent-bootstrap.service" ];
+  };
+
+  # Wire services together after they are up so downloads/imports work immediately.
+  systemd.services.arr-bootstrap = {
+    description = "Bootstrap ARR download clients and Prowlarr apps";
+    wantedBy = [ "multi-user.target" ];
+    requires = [
+      "docker-qbittorrent.service"
+      "docker-radarr.service"
+      "docker-sonarr.service"
+      "docker-prowlarr.service"
+    ];
+    after = [
+      "docker-qbittorrent.service"
+      "docker-radarr.service"
+      "docker-sonarr.service"
+      "docker-prowlarr.service"
+    ];
+    path = with pkgs; [
+      coreutils
+      curl
+      gnugrep
+      gnused
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+    };
+    script = ''
+      set -eu
+
+      wait_http() {
+        url="$1"
+        tries=0
+        until curl -fsS "$url" >/dev/null 2>&1; do
+          tries=$((tries + 1))
+          if [ "$tries" -ge 90 ]; then
+            echo "Timed out waiting for $url" >&2
+            return 1
+          fi
+          sleep 2
+        done
+      }
+
+      api_key() {
+        sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:\1:p' "$1" | head -n1
+      }
+
+      wait_http "http://127.0.0.1:7878/ping"
+      wait_http "http://127.0.0.1:8989/ping"
+      wait_http "http://127.0.0.1:9696/ping"
+
+      qb_cookie="$(mktemp)"
+      trap 'rm -f "$qb_cookie" /tmp/radarr-qb.json /tmp/sonarr-qb.json /tmp/prowlarr-radarr.json /tmp/prowlarr-sonarr.json' EXIT
+
+      qb_login="$(curl -sS -c "$qb_cookie" --data 'username=${qbitWebUiUser}&password=${qbitWebUiPassword}' http://127.0.0.1:18080/api/v2/auth/login || true)"
+      if ! echo "$qb_login" | grep -q '^Ok'; then
+        echo "qBittorrent login failed in arr-bootstrap" >&2
+        exit 1
+      fi
+
+      for pair in "movies:/data/torrents/complete/movies" "tv:/data/torrents/complete/tv" "music:/data/torrents/complete/music"; do
+        category="$(echo "$pair" | cut -d: -f1)"
+        save_path="$(echo "$pair" | cut -d: -f2-)"
+        curl -fsS -b "$qb_cookie" --data-urlencode "category=$category" --data-urlencode "savePath=$save_path" http://127.0.0.1:18080/api/v2/torrents/createCategory >/dev/null || true
+      done
+
+      radarr_key="$(api_key ${configRoot}/radarr/config.xml)"
+      sonarr_key="$(api_key ${configRoot}/sonarr/config.xml)"
+      prowlarr_key="$(api_key ${configRoot}/prowlarr/config.xml)"
+
+      if ! curl -fsS -H "X-Api-Key: $radarr_key" http://127.0.0.1:7878/api/v3/downloadclient | grep -q '"implementation":"QBittorrent"'; then
+        cat > /tmp/radarr-qb.json <<EOF
+{
+  "enable": true,
+  "priority": 1,
+  "removeCompletedDownloads": true,
+  "removeFailedDownloads": true,
+  "name": "qBittorrent",
+  "implementation": "QBittorrent",
+  "configContract": "QBittorrentSettings",
+  "fields": [
+    { "name": "host", "value": "127.0.0.1" },
+    { "name": "port", "value": 18080 },
+    { "name": "useSsl", "value": false },
+    { "name": "urlBase", "value": "" },
+    { "name": "username", "value": "${qbitWebUiUser}" },
+    { "name": "password", "value": "${qbitWebUiPassword}" },
+    { "name": "movieCategory", "value": "movies" },
+    { "name": "movieImportedCategory", "value": "movies-imported" }
+  ]
+}
+EOF
+        curl -fsS -X POST -H "X-Api-Key: $radarr_key" -H "Content-Type: application/json" --data @/tmp/radarr-qb.json http://127.0.0.1:7878/api/v3/downloadclient >/dev/null
+      fi
+
+      if ! curl -fsS -H "X-Api-Key: $sonarr_key" http://127.0.0.1:8989/api/v3/downloadclient | grep -q '"implementation":"QBittorrent"'; then
+        cat > /tmp/sonarr-qb.json <<EOF
+{
+  "enable": true,
+  "priority": 1,
+  "removeCompletedDownloads": true,
+  "removeFailedDownloads": true,
+  "name": "qBittorrent",
+  "implementation": "QBittorrent",
+  "configContract": "QBittorrentSettings",
+  "fields": [
+    { "name": "host", "value": "127.0.0.1" },
+    { "name": "port", "value": 18080 },
+    { "name": "useSsl", "value": false },
+    { "name": "urlBase", "value": "" },
+    { "name": "username", "value": "${qbitWebUiUser}" },
+    { "name": "password", "value": "${qbitWebUiPassword}" },
+    { "name": "tvCategory", "value": "tv" },
+    { "name": "tvImportedCategory", "value": "tv-imported" }
+  ]
+}
+EOF
+        curl -fsS -X POST -H "X-Api-Key: $sonarr_key" -H "Content-Type: application/json" --data @/tmp/sonarr-qb.json http://127.0.0.1:8989/api/v3/downloadclient >/dev/null
+      fi
+
+      if ! curl -fsS -H "X-Api-Key: $prowlarr_key" http://127.0.0.1:9696/api/v1/applications | grep -q '"implementation":"Radarr"'; then
+        cat > /tmp/prowlarr-radarr.json <<EOF
+{
+  "name": "Radarr",
+  "syncLevel": "fullSync",
+  "enable": true,
+  "implementation": "Radarr",
+  "configContract": "RadarrSettings",
+  "tags": [],
+  "fields": [
+    { "name": "prowlarrUrl", "value": "http://127.0.0.1:9696" },
+    { "name": "baseUrl", "value": "http://127.0.0.1:7878" },
+    { "name": "apiKey", "value": "$radarr_key" }
+  ]
+}
+EOF
+        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-radarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null
+      fi
+
+      if ! curl -fsS -H "X-Api-Key: $prowlarr_key" http://127.0.0.1:9696/api/v1/applications | grep -q '"implementation":"Sonarr"'; then
+        cat > /tmp/prowlarr-sonarr.json <<EOF
+{
+  "name": "Sonarr",
+  "syncLevel": "fullSync",
+  "enable": true,
+  "implementation": "Sonarr",
+  "configContract": "SonarrSettings",
+  "tags": [],
+  "fields": [
+    { "name": "prowlarrUrl", "value": "http://127.0.0.1:9696" },
+    { "name": "baseUrl", "value": "http://127.0.0.1:8989" },
+    { "name": "apiKey", "value": "$sonarr_key" }
+  ]
+}
+EOF
+        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-sonarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null
+      fi
+    '';
+  };
 
   virtualisation.oci-containers.containers = {
     qbittorrent = {

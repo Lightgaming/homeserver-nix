@@ -90,6 +90,19 @@
         };
       };
 
+      "voxeldash.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:7867";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_read_timeout 86400;
+            proxy_send_timeout 86400;
+          '';
+        };
+      };
+
       "dns.lotz.zip" = {
         useACMEHost = "lotz.zip";
         forceSSL = true;

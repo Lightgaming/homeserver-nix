@@ -167,6 +167,7 @@ EOF
       wait_http "http://127.0.0.1:7878/ping"
       wait_http "http://127.0.0.1:8989/ping"
       wait_http "http://127.0.0.1:9696/ping"
+      wait_http "http://127.0.0.1:18080/api/v2/app/version"
 
       qb_cookie="$(mktemp)"
       trap 'rm -f "$qb_cookie" /tmp/radarr-qb.json /tmp/sonarr-qb.json /tmp/prowlarr-radarr.json /tmp/prowlarr-sonarr.json' EXIT

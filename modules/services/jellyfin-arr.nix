@@ -363,7 +363,11 @@ EOF
         "${configRoot}/jellyfin/cache:/cache"
         "${mediaRoot}/media:/media"
       ];
-      extraOptions = [ "--network=host" ];
+      extraOptions = [
+        "--network=host"
+        "--device=/dev/dri:/dev/dri"
+        "--group-add=${builtins.toString config.users.groups.render.gid}"
+      ];
     };
 
     jellyseerr = {

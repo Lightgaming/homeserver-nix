@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; 
     vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
     
     compose2nix.url = "github:aksiksi/compose2nix";
     compose2nix.inputs.nixpkgs.follows = "nixpkgs";

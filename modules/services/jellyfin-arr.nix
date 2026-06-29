@@ -100,6 +100,11 @@ EOF
       set_kv 'WebUI\AuthSubnetWhitelist' '127.0.0.1/32'
       set_kv 'WebUI\AuthSubnetWhitelistEnabled' 'true'
 
+      # Let WEBUI_PASSWORD env var take over auth; remove stale config entries.
+      sed -i '/^WebUI\\Username=/d' "$qbit_conf"
+      sed -i '/^WebUI\\Password=/d' "$qbit_conf"
+      sed -i '/^WebUI\\Password_PBKDF2=/d' "$qbit_conf"
+
       cat > "$qbit_dir/categories.json" <<'EOF'
 {
   "movies": { "savePath": "/data/torrents/complete/movies" },

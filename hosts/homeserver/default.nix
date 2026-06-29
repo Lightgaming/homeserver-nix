@@ -33,6 +33,7 @@
   # Allow EOL Node.js 20 for vscode-server
   nixpkgs.config.permittedInsecurePackages = [
     "nodejs-20.20.2"
+    "nodejs-slim-20.20.2"
   ];
 
   # --- ZFS Configuration ---

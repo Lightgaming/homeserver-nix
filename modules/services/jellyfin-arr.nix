@@ -176,9 +176,9 @@ EOF
       qb_cookie="$(mktemp)"
       trap 'rm -f "$qb_cookie" /tmp/radarr-qb.json /tmp/sonarr-qb.json /tmp/prowlarr-radarr.json /tmp/prowlarr-sonarr.json' EXIT
 
-      qb_login="$(curl -sS -c "$qb_cookie" --data 'username=${qbitWebUiUser}&password=${qbitWebUiPassword}' http://127.0.0.1:18080/api/v2/auth/login || true)"
-      if ! echo "$qb_login" | grep -q '^Ok'; then
-        echo "qBittorrent login failed in arr-bootstrap" >&2
+      qb_http="$(curl -sS -c "$qb_cookie" -w '%{http_code}' -o /dev/null --data 'username=${qbitWebUiUser}&password=${qbitWebUiPassword}' http://127.0.0.1:18080/api/v2/auth/login)"
+      if [ "$qb_http" != "200" ] && [ "$qb_http" != "204" ]; then
+        echo "qBittorrent login failed in arr-bootstrap (HTTP $qb_http)" >&2
         exit 1
       fi
 

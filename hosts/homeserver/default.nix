@@ -30,6 +30,11 @@
   # --- Flakes Configuration ---
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Allow EOL Node.js 20 for vscode-server
+  nixpkgs.config.permittedInsecurePackages = [
+    "nodejs-20.20.2"
+  ];
+
   # --- ZFS Configuration ---
   # ZFS requires a hostId to track pool imports
   networking.hostId = "81872454";

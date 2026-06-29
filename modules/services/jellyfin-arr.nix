@@ -214,7 +214,7 @@ EOF
   ]
 }
 EOF
-        curl -fsS -X POST -H "X-Api-Key: $radarr_key" -H "Content-Type: application/json" --data @/tmp/radarr-qb.json http://127.0.0.1:7878/api/v3/downloadclient >/dev/null
+        curl -fsS -X POST -H "X-Api-Key: $radarr_key" -H "Content-Type: application/json" --data @/tmp/radarr-qb.json http://127.0.0.1:7878/api/v3/downloadclient >/dev/null || true
       fi
 
       if ! curl -fsS -H "X-Api-Key: $sonarr_key" http://127.0.0.1:8989/api/v3/downloadclient | grep -q '"implementation":"QBittorrent"'; then
@@ -239,7 +239,7 @@ EOF
   ]
 }
 EOF
-        curl -fsS -X POST -H "X-Api-Key: $sonarr_key" -H "Content-Type: application/json" --data @/tmp/sonarr-qb.json http://127.0.0.1:8989/api/v3/downloadclient >/dev/null
+        curl -fsS -X POST -H "X-Api-Key: $sonarr_key" -H "Content-Type: application/json" --data @/tmp/sonarr-qb.json http://127.0.0.1:8989/api/v3/downloadclient >/dev/null || true
       fi
 
       if ! curl -fsS -H "X-Api-Key: $prowlarr_key" http://127.0.0.1:9696/api/v1/applications | grep -q '"implementation":"Radarr"'; then
@@ -258,7 +258,7 @@ EOF
   ]
 }
 EOF
-        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-radarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null
+        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-radarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null || true
       fi
 
       if ! curl -fsS -H "X-Api-Key: $prowlarr_key" http://127.0.0.1:9696/api/v1/applications | grep -q '"implementation":"Sonarr"'; then
@@ -277,7 +277,7 @@ EOF
   ]
 }
 EOF
-        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-sonarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null
+        curl -fsS -X POST -H "X-Api-Key: $prowlarr_key" -H "Content-Type: application/json" --data @/tmp/prowlarr-sonarr.json http://127.0.0.1:9696/api/v1/applications >/dev/null || true
       fi
     '';
   };

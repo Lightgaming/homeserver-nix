@@ -6,7 +6,6 @@ let
   timezone = if config.time.timeZone != null then config.time.timeZone else "UTC";
   qbitWebUiUser = "admin";
   qbitWebUiPassword = "MediaStack123!";
-  qbitWebUiPasswordHash = "100000:aqu7rlfM4/2J055EkRIFsw==:yNshKbv0AhSHNByWGFhKFXUWVGXNSFP2oqx4XfGv0EAI6XSkZ3iuF4+FLvZOE7hfbhLq2/JOu1byrN2Yg9X5FA==";
 
   lsioEnv = {
     PUID = "1000";
@@ -100,8 +99,6 @@ EOF
       set_kv 'WebUI\ServerDomains' '*'
       set_kv 'WebUI\AuthSubnetWhitelist' '127.0.0.1/32'
       set_kv 'WebUI\AuthSubnetWhitelistEnabled' 'true'
-      set_kv 'WebUI\Username' '${qbitWebUiUser}'
-      set_kv 'WebUI\Password_PBKDF2' '@ByteArray(${qbitWebUiPasswordHash})'
 
       cat > "$qbit_dir/categories.json" <<'EOF'
 {
@@ -285,6 +282,7 @@ EOF
       image = "lscr.io/linuxserver/qbittorrent:latest";
       environment = lsioEnv // {
         WEBUI_PORT = "18080";
+        WEBUI_PASSWORD = "${qbitWebUiPassword}";
       };
       volumes = [
         "${configRoot}/qbittorrent:/config"

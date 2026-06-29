@@ -63,12 +63,6 @@
     enable = true;
   };
 
-  # VScode Server
-  services.vscode-server = {
-    enable = true;
-    enableFHS = true;
-  };
-
   # --- System Networking & Core ---
   networking.hostName = "homeserver";
   networking.networkmanager.enable = true;

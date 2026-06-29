@@ -98,6 +98,8 @@ EOF
       set_kv 'WebUI\Address' '*'
       set_kv 'WebUI\Port' '18080'
       set_kv 'WebUI\ServerDomains' '*'
+      set_kv 'WebUI\AuthSubnetWhitelist' '127.0.0.1/32'
+      set_kv 'WebUI\AuthSubnetWhitelistEnabled' 'true'
       set_kv 'WebUI\Username' '${qbitWebUiUser}'
       set_kv 'WebUI\Password_PBKDF2' '@ByteArray(${qbitWebUiPasswordHash})'
 

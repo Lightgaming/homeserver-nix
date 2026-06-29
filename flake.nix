@@ -11,7 +11,7 @@
   # compose2nix.url = "github:aksiksi/compose2nix";
   # compose2nix.inputs.nixpkgs.follows = "nixpkgs";
 
-  outputs = { self, nixpkgs, vscode-server, ... }: {
+  outputs = { self, nixpkgs, ... }: {
     nixosConfigurations = {
       homeserver = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";

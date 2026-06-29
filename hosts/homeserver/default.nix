@@ -30,19 +30,6 @@
   # --- Flakes Configuration ---
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Allow EOL Node.js 20 for vscode-server
-  nixpkgs.config.permittedInsecurePackages = [
-    "nodejs-20.20.2"
-    "nodejs-slim-20.20.2"
-  ];
-
-  # Skip nodejs_20 tests — no binary cache exists for EOL nodejs, and tests are flaky
-  nixpkgs.overlays = [
-    (final: prev: {
-      nodejs_20 = prev.nodejs_20.overrideAttrs (_: { doCheck = false; });
-    })
-  ];
-
   # --- ZFS Configuration ---
   # ZFS requires a hostId to track pool imports
   networking.hostId = "81872454";

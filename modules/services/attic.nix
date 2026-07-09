@@ -56,5 +56,9 @@
   #   trusted-public-keys = [ "<cache-name>:<public-key>" ];
   # };
   #
+  # Token generation (run from /tmp as root):
+  #   atticd-atticadm make-token --sub "hardclip" --validity "1y" \
+  #     --push "*" --pull "*" --create-cache "*"
+  #
   # You can find the public key with: attic cache info <cache-name>
 }

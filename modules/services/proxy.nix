@@ -180,6 +180,20 @@
           }
         '';
       };
+
+      "cache.lotz.zip" = {
+        useACMEHost = "lotz.zip";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8090";
+          recommendedProxySettings = true;
+          extraConfig = ''
+            client_max_body_size 0; # Unlimited — NAR uploads can be large
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+          '';
+        };
+      };
     };
   };
 }

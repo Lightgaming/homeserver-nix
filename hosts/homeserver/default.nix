@@ -20,6 +20,7 @@
     ../../modules/services/github-runner.nix
     ../../modules/services/jellyfin-arr.nix
     ../../modules/services/minecraft.nix
+    ../../modules/services/attic.nix
   ];
 
   # --- Bootloader Configuration ---
